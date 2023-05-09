@@ -12,6 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -19,9 +21,8 @@ public class SecurityConfig {
     @Autowired
     MemberService memberService;
 
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         //http.csrf().disable();
         http.formLogin()
                 .loginPage("/members/login")
@@ -34,28 +35,27 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")
         ;
         http.authorizeRequests()
-                .mvcMatchers("/","/members/**","/item/**","/image/**").permitAll()
+                .mvcMatchers("/", "/members/**", "/item/**", "/images/**").permitAll()
                 .mvcMatchers("/css/**","/js/**","/img/**").permitAll()
                 .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         ;
         http.exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
-
         return http.build();
     }
+
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-        //StandardPasswordEncoder() - SHA256
-        //NoOpPasswordEncoder() - 암호화하지 않은 데이터
+        //StandardPasswordEncoder()-SHA256
+        //NoOpPasswordEncoder()-암호화하지 않은 데이터
     }
 
     @Bean
     AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception{
+            AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
 
 }
